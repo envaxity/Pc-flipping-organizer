@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipForge | PC Build Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">PC BUILDING + FLIPPING HQ</p>
+        <h1>Run your inventory, builds, buyers, and profit in one place.</h1>
+        <p class="hero__text">
+          Track every GPU, every work-in-progress rig, and every sale so you always know what is worth finishing, listing, or negotiating.
+        </p>
+        <div class="hero__actions">
+          <button class="button button--primary" data-jump="#builds">Open Build Pipeline</button>
+          <button class="button button--ghost" data-jump="#inventory">Check Parts Inventory</button>
+        </div>
+      </div>
+
+      <aside class="hero__panel">
+        <div class="panel-card">
+          <p class="panel-card__label">This week</p>
+          <div class="hero-metrics">
+            <div>
+              <span id="weeklyProfit" class="metric-value">$0</span>
+              <span class="metric-label">Projected profit</span>
+            </div>
+            <div>
+              <span id="activeDeals" class="metric-value">0</span>
+              <span class="metric-label">Active buyer chats</span>
+            </div>
+            <div>
+              <span id="readyToList" class="metric-value">0</span>
+              <span class="metric-label">Systems ready to post</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </header>
+
+    <main class="dashboard">
+      <section class="summary-grid">
+        <article class="summary-card">
+          <p class="summary-card__label">Cash tied up</p>
+          <h2 id="cashInvested">$0</h2>
+          <p class="summary-card__foot">Current cost across parts and systems.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-card__label">Inventory value</p>
+          <h2 id="inventoryValue">$0</h2>
+          <p class="summary-card__foot">Expected resale value of available parts.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-card__label">Average margin</p>
+          <h2 id="averageMargin">0%</h2>
+          <p class="summary-card__foot">Across listed or sold builds.</p>
+        </article>
+        <article class="summary-card accent-card">
+          <p class="summary-card__label">Fast view</p>
+          <ul class="status-list">
+            <li><span>Needs parts</span><strong id="needsPartsCount">0</strong></li>
+            <li><span>Being tested</span><strong id="testingCount">0</strong></li>
+            <li><span>Sold this cycle</span><strong id="soldCount">0</strong></li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <article class="card card--wide" id="builds">
+          <div class="card__header">
+            <div>
+              <p class="section-tag">Build pipeline</p>
+              <h2>What each system is doing right now</h2>
+            </div>
+            <button class="button button--primary" id="addBuildButton">Add Build</button>
+          </div>
+          <div id="buildBoard" class="build-board"></div>
+        </article>
+
+        <article class="card" id="inventory">
+          <div class="card__header">
+            <div>
+              <p class="section-tag">Inventory</p>
+              <h2>Parts waiting for action</h2>
+            </div>
+            <button class="button button--secondary" id="addPartButton">Add Part</button>
+          </div>
+          <div id="partsList" class="stack-list"></div>
+        </article>
+
+        <article class="card" id="leads">
+          <div class="card__header">
+            <div>
+              <p class="section-tag">Buyer leads</p>
+              <h2>Conversations worth following up</h2>
+            </div>
+            <button class="button button--secondary" id="addLeadButton">Add Lead</button>
+          </div>
+          <div id="leadsList" class="stack-list"></div>
+        </article>
+
+        <article class="card card--wide" id="finance">
+          <div class="card__header">
+            <div>
+              <p class="section-tag">Profit tracker</p>
+              <h2>Know what each flip is actually making</h2>
+            </div>
+          </div>
+          <div class="finance-grid">
+            <div class="finance-note">
+              <h3>How to use this page</h3>
+              <p>Keep parts in inventory until they are assigned. Move systems through stages as you diagnose, clean, test, list, and sell. Every card updates your totals automatically.</p>
+            </div>
+            <div class="finance-note finance-note--accent">
+              <h3>Simple workflow</h3>
+              <p>1. Add incoming parts. 2. Create a build when a system starts taking shape. 3. Update list price and sale price. 4. Use buyer leads to remember who is serious.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="entryDialog" class="entry-dialog">
+    <form method="dialog" id="entryForm" class="entry-form">
+      <div class="entry-form__header">
+        <div>
+          <p class="section-tag" id="dialogTag">New entry</p>
+          <h2 id="dialogTitle">Add item</h2>
+        </div>
+        <button class="button button--ghost button--small" value="cancel">Close</button>
+      </div>
+      <div id="formFields" class="form-grid"></div>
+      <menu class="entry-form__actions">
+        <button class="button button--ghost" value="cancel">Cancel</button>
+        <button class="button button--primary" id="saveEntryButton" value="default">Save</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <template id="buildTemplate">
+    <article class="build-card">
+      <div class="build-card__top">
+        <div>
+          <h3 class="build-card__name"></h3>
+          <p class="build-card__spec"></p>
+        </div>
+        <span class="pill build-card__stage"></span>
+      </div>
+      <div class="build-card__metrics"></div>
+      <p class="build-card__notes"></p>
+      <div class="build-card__actions">
+        <button class="button button--ghost button--small action-edit">Edit</button>
+        <button class="button button--ghost button--small action-delete">Delete</button>
+      </div>
+    </article>
+  </template>
+
+  <template id="listTemplate">
+    <article class="list-card">
+      <div class="list-card__content"></div>
+      <div class="list-card__actions">
+        <button class="button button--ghost button--small action-edit">Edit</button>
+        <button class="button button--ghost button--small action-delete">Delete</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
